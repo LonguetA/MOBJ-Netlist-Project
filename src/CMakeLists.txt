@@ -45,8 +45,8 @@ find_package(LibXml2)
                                       Shape.cpp
                        )
 
-        add_executable ( tme6 ${cpps} )
-               target_link_libraries ( tme6 ${LIBXML2_LIBRARIES} )
-install ( TARGETS      tme6        DESTINATION bin )
+        add_executable ( tme7 ${cpps} )
+               target_link_libraries ( tme7 ${LIBXML2_LIBRARIES} )
+install ( TARGETS      tme7        DESTINATION bin )
                install ( FILES        ${includes}  DESTINATION include )
 

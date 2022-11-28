@@ -2,6 +2,7 @@
 #include "Net.h"
 #include "Instance.h"
 #include "Cell.h"
+#include "Shape.h"
 
 namespace Netlist {
 
@@ -120,9 +121,17 @@ namespace Netlist {
     //------------SETTEUR-----------//
     void  Instance::setPosition   ( const Point& p){
       position_ = p;
+
+      for (std::vector<Term *>::iterator it = terms_.begin() ; it != terms_.end() ; it++){
+        TermShape *tr = getMasterCell()->getSymbol()->getTermShape((*it));
+        std::cout << getMasterCell()->getSymbol()->getTermShape((*it)) << std::endl;
+        int x = tr->getX();
+        int y = tr->getY();
+        (*it)->setPosition(x + position_.getX(), y + position_.getY());
+      }
     }
     void  Instance::setPosition   ( int x, int y ){
-      position_ = Point(x,y);
+      setPosition(Point(x,y));
     }
 
 }

@@ -37,19 +37,21 @@ Point   Symbol::getTermPosition ( Term* t ) const{
       return tr->getTerm()->getPosition();
     }
   }
+  return Point();
 }
 
 TermShape* Symbol::getTermShape    ( Term* t) const{
   for (std::vector<Shape*>::const_iterator it = shapes_.begin() ; it != shapes_.end() ; it++){
     TermShape *tr = dynamic_cast<TermShape *>(*it);
-    if (tr and tr->getTerm() == t) return tr;
+    if (tr and (tr->getTerm()->getName() == t->getName())) return tr;
   }
+  return NULL;
 }
 void Symbol::add             ( Shape* s){
     shapes_.push_back(s);
 }
 void Symbol::remove          ( Shape* s){
-  for (std::vector<Shape*>::const_iterator it = shapes_.begin() ; it != shapes_.end() ; it++){
+  for (std::vector<Shape*>::iterator it = shapes_.begin() ; it != shapes_.end() ; it++){
     if ((*it) == s) {
       shapes_.erase(it);
       return;
