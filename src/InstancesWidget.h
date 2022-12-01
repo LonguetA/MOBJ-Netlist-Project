@@ -2,31 +2,22 @@
 #ifndef NETLIST_INSTANCESWIDGET_H
 #define NETLIST_INSTANCESWIDGET_H
 
-#include <QDialog>
-#include <QLineEdit>
 #include <QTableView>
-#include <QWidget>
-#include <QPixmap>
-#include <QPainter>
-#include <QRect>
-#include <QPoint>
-class QPainter;
-#include "Cell.h"
-#include "CellViewer.h"
 #include "InstancesModel.h"
+#include <QPushButton>
 
 namespace Netlist {
 
   class CellViewer;
-  class InstancesModel;
-
+  class Cell;
+  
   class InstancesWidget : public QWidget {
     Q_OBJECT;
     public:
                   InstancesWidget ( QWidget* parent=NULL );
             void  setCellViewer   ( CellViewer* );
             int   getSelectedRow  () const;
-    void  setCell         ( Cell* );
+    inline void  setCell         ( Cell* );
             //bool  run             ();
     protected:
       //virtual void    paintEvent         ( QPaintEvent* );
@@ -39,5 +30,6 @@ namespace Netlist {
             QTableView*     view_;
             QPushButton*    load_;
   };
+  inline void InstancesWidget::setCell(Cell *c){ baseModel_->setCell(c);}
 }
 #endif

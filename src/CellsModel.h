@@ -1,16 +1,17 @@
 
-#ifndef NETLIST_INSTANCESMODEL_H
-#define NETLIST_INSTANCESMODEL_H
+#ifndef NETLIST_CELLSMODEL_H
+#define NETLIST_CELLSMODEL_H
 
-#include "Cell.h"
 #include <QAbstractTableModel>
 
 namespace Netlist {
-  class InstancesModel : public QAbstractTableModel {
+
+class Cell;
+  class CellsModel : public QAbstractTableModel {
     Q_OBJECT ;
     public :
-                        InstancesModel  ( QObject * parent = NULL );
-                        ~InstancesModel ();
+                        CellsModel  ( QObject * parent = NULL );
+                        ~CellsModel ();
               void      setCell         ( Cell * );
               Cell *    getModel        ( int row );
               int       rowCount        ( const QModelIndex & parent = QModelIndex ()) const;

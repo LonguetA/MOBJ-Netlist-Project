@@ -15,6 +15,8 @@
 #include "SaveCellDialog.h"
 #include "OpenCellDialog.h"
 #include "InstancesWidget.h"
+#include "CellsLib.h"
+#include "CellsModel.h"
 
 namespace Netlist {
 
@@ -30,11 +32,14 @@ namespace Netlist {
             void      setCell             ( Cell* );
             void      saveCell            ();
             void      openCell            ();
-            void      instanceView        ();
+            void      showInstancesWidget       ();
+            void      showCellsLib        ();
+            
     private :
       CellWidget * cellWidget_ ;
       SaveCellDialog * saveCellDialog_ ;
-      InstancesWidget *instanceViewer_;
+      CellsLib*        cellsLib_;
+      InstancesWidget* instancesWidget_;
   };
 }
 #endif

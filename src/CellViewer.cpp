@@ -5,12 +5,15 @@ namespace Netlist {
   : QMainWindow ( parent )
   , cellWidget_ ( NULL )
   , saveCellDialog_ ( NULL )
-  , instanceViewer_ (NULL)
+  , instancesWidget_ (NULL)
+  ,cellsLib_ (NULL)
   {
     cellWidget_ = new CellWidget ();
-    instanceViewer_ = new InstancesWidget ();
+    instancesWidget_ = new InstancesWidget ();
     saveCellDialog_ = new SaveCellDialog ( this );
-    instanceViewer_->setCellViewer(this);
+    instancesWidget_->setCellViewer(this);
+    cellsLib_ = new CellsLib();
+    //cellsLib_ -> setCellViewer(this);
     setCentralWidget ( cellWidget_ );
     QMenu * fileMenu = menuBar () -> addMenu ( "&File" );
 
@@ -33,7 +36,14 @@ namespace Netlist {
     action -> setShortcut ( QKeySequence ( "CTRL+I" ) );
     action -> setVisible ( true );
     fileMenu -> addAction ( action );
-    connect ( action , SIGNAL ( triggered ()) , this , SLOT ( instanceView()) );
+    connect ( action , SIGNAL ( triggered ()) , this , SLOT ( showInstancesWidget()) );
+    
+    action = new QAction ( "&Cell" , this );
+    action -> setStatusTip ( "Load a Cell from disk" );
+    action -> setShortcut ( QKeySequence ( "CTRL+O" ) );
+    action -> setVisible ( true );
+    fileMenu -> addAction ( action );
+    connect ( action , SIGNAL ( triggered ()) , this , SLOT ( showCellsLib  ()) );
 
     action = new QAction ( "&Quit" , this );
     action -> setStatusTip ( "Exit the Netlist Viewer" );
@@ -44,8 +54,8 @@ namespace Netlist {
 
   }
 
-  void CellViewer::instanceView (){
-    instanceViewer_->show();
+  void CellViewer::showInstancesWidget (){
+   instancesWidget_->show();
   }
 
 
@@ -67,7 +77,8 @@ namespace Netlist {
 
   void    CellViewer::setCell ( Cell* c){
     cellWidget_->setCell(c);
-    instanceViewer_->setCell(c);
+    instancesWidget_->setCell(c);
+    
   }
 
 
@@ -77,6 +88,10 @@ namespace Netlist {
     if ( OpenCellDialog::run ( cellName)) {
       cellWidget_->setCell(Cell::load(cellName.toStdString()));
     }
+  }
+  
+  void     CellViewer:: showCellsLib        (){
+  	cellsLib_->show();
   }
 
 

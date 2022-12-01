@@ -1,12 +1,8 @@
-#include <QLabel>
-#include <QLineEdit>
-#include <QPushButton>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QMenu>
+#include "Cell.h"
+#include "CellViewer.h"
 #include <QHeaderView>
 #include "InstancesWidget.h"
-
+#include "InstancesModel.h"
 
 namespace Netlist {
 
@@ -66,9 +62,5 @@ namespace Netlist {
     cellViewer_ = c;
   }
 
-
-  void InstancesWidget::setCell(Cell *c){
-    baseModel_->setCell(c);
-  }
 
 }
