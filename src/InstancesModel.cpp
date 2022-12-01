@@ -45,7 +45,7 @@ namespace Netlist {
     return QVariant ();
   }
   Cell * InstancesModel :: getModel ( int row )
-  {
+  { 
     if ( not cell_ ) return NULL ;
     if ( row >= ( int ) cell_ -> getInstances (). size ()) return NULL ;
     return cell_ -> getInstances ()[ row ] -> getMasterCell ();

@@ -21,6 +21,7 @@
 namespace Netlist {
 
   class InstancesWidget;
+  class CellsLib;
 
   class CellViewer : public QMainWindow {
     Q_OBJECT ;
@@ -34,6 +35,8 @@ namespace Netlist {
             void      openCell            ();
             void      showInstancesWidget       ();
             void      showCellsLib        ();
+    signals : 
+            void      cellLoaded();
             
     private :
       CellWidget * cellWidget_ ;

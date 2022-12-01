@@ -35,9 +35,15 @@ namespace Netlist {
     verticalHeader -> setVisible ( false );
     load_ -> setText ( " Load " );
 
+    QHBoxLayout * hLayout = new QHBoxLayout ();
+    hLayout -> addStretch ();
+    hLayout -> addWidget ( load_ );
+    hLayout -> addStretch ();
+
+
     QVBoxLayout * vLayout = new QVBoxLayout ();
     vLayout -> addWidget(view_);
-    vLayout -> addWidget(load_);
+    vLayout -> addLayout(hLayout);
     setLayout ( vLayout );
     
     connect ( load_ , SIGNAL ( clicked ()) , this , SLOT ( load ()) );

@@ -3,6 +3,7 @@
 #define NETLIST_CELLSMODEL_H
 
 #include <QAbstractTableModel>
+#include <vector>
 
 namespace Netlist {
 
@@ -12,14 +13,15 @@ class Cell;
     public :
                         CellsModel  ( QObject * parent = NULL );
                         ~CellsModel ();
-              void      setCell         ( Cell * );
-              Cell *    getModel        ( int row );
+              Cell*     getModel        ( int row );
               int       rowCount        ( const QModelIndex & parent = QModelIndex ()) const;
               int       columnCount     ( const QModelIndex & parent = QModelIndex ()) const;
               QVariant  data            ( const QModelIndex & index , int role = Qt :: DisplayRole) const;
               QVariant  headerData      ( int section, Qt :: Orientation orientation, int role = Qt :: DisplayRole ) const ;
+    public slots:
+              void updateDatas();
     private :
-        Cell * cell_ ;
+        std::vector<Cell*> cells_ ;
   };
 }
 

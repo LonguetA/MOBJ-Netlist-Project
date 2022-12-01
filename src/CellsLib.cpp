@@ -30,9 +30,14 @@ CellsLib::CellsLib(QWidget* parent): QWidget( parent )
     verticalHeader -> setVisible ( false );
     load_ -> setText ( " Load " );
 
+    QHBoxLayout * hLayout = new QHBoxLayout ();
+    hLayout -> addStretch ();
+    hLayout -> addWidget ( load_ );
+    hLayout -> addStretch ();
+
     QVBoxLayout * vLayout = new QVBoxLayout ();
     vLayout -> addWidget(view_);
-    vLayout -> addWidget(load_);
+    vLayout -> addLayout(hLayout);
     setLayout ( vLayout );
     
     connect ( load_ , SIGNAL ( clicked ()) , this , SLOT ( load ()) );
@@ -41,8 +46,17 @@ CellsLib::CellsLib(QWidget* parent): QWidget( parent )
 void CellsLib::setCellViewer(CellViewer* c){ 
 	cellViewer_ = c;
 }
-int CellsLib::getSelectedRow()const {return 1;}
-void CellsLib::load(){}
+int CellsLib::getSelectedRow()const {
+  QModelIndexList selecteds = view_ -> selectionModel ()
+  -> selection ().indexes ();
+  if ( selecteds.empty ()) return -1;
+  return selecteds.first().row ();
+}
+void CellsLib::load(){
+  int selectedRow = getSelectedRow ();
+    if ( selectedRow < 0) return ;
+    cellViewer_ -> setCell ( baseModel_ -> getModel ( selectedRow ) );
+}
 
 
 }

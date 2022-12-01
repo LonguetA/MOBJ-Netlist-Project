@@ -37,6 +37,8 @@
                                       OpenCellDialog.h
                                       InstancesWidget.h
                                       InstancesModel.h
+                                      CellsLib.h
+                                      CellsModel.h
                        )
 
                     set( cpps         Indentation.cpp
@@ -54,6 +56,8 @@
                                       SaveCellDialog.cpp
                                       CellWidget.cpp
                                       CellViewer.cpp
+                                      CellsLib.cpp
+                                      CellsModel.cpp
                                       OpenCellDialog.cpp
                                       InstancesWidget.cpp
                                       InstancesModel.cpp
