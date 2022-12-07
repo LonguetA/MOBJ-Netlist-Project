@@ -83,7 +83,7 @@ namespace Netlist {
         term_ = cell->getTerm ( name );
     }
     TermShape::~TermShape () { }
-    Box TermShape::getBoundingBox () const { return Box( x_ , y_ , x_ , y_ ); }
+    Box TermShape::getBoundingBox () const { return Box( x_-2 , y_-2 , x_+2 , y_+2 ); }
 
     string TermShape::alignToString(NameAlign align){
         switch(align){
@@ -130,7 +130,9 @@ namespace Netlist {
 
     LineShape::LineShape( Symbol * owner, int x1 , int y1 , int x2 , int y2 ):Shape(owner),x1_(x1),y1_(y1),x2_(x2),y2_(y2){}
     LineShape::~LineShape(){}
-    Box LineShape::getBoundingBox  () const {return Box( min(x1_,x2_) , min(y1_,y2_) , max(x1_,x2_) , max(y1_,y2_) );}
+    Box LineShape::getBoundingBox  () const {
+        std::cout << "X1 : " << x1_ << " X2 : " << x2_ << " Y1 : " << y1_ << " Y2 : " << y2_ << std::endl; 
+        return Box(min(x1_,x2_) , min(y1_,y2_), max(x2_,x1_) ,max(y2_,y1_)) ;}
 
     void LineShape::toXml ( std::ostream & os) const {
         os << indent << "<line x1=" << getX1() << "\" y1=\"" << getY1() << "\" x2=" << getX2() << "\" y2=\"" << getY2() << "\"/>" << std::endl;
@@ -169,8 +171,8 @@ namespace Netlist {
         std::string x2Name = xmlCharToString( xmlTextReaderGetAttribute( reader, (const xmlChar*)"x2" ) );
         std::string y1Name = xmlCharToString( xmlTextReaderGetAttribute( reader, (const xmlChar*)"y1" ) );
         std::string y2Name = xmlCharToString( xmlTextReaderGetAttribute( reader, (const xmlChar*)"y2" ) );
-        std::string spanName = xmlCharToString( xmlTextReaderGetAttribute( reader, (const xmlChar*)"start" ) );
-        std::string startName = xmlCharToString( xmlTextReaderGetAttribute( reader, (const xmlChar*)"span" ) );
+        std::string spanName = xmlCharToString( xmlTextReaderGetAttribute( reader, (const xmlChar*)"span" ) );
+        std::string startName = xmlCharToString( xmlTextReaderGetAttribute( reader, (const xmlChar*)"start" ) );
 
 
         //Si les parametres sont vides 

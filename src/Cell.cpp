@@ -7,7 +7,7 @@
 #include  "Term.h"
 #include  "Net.h"
 #include  "Instance.h"
-
+#include "Error.h"
 
 namespace Netlist {
 
@@ -345,8 +345,7 @@ namespace Netlist {
           break;
       }
 
-      cerr << "[ERROR] Cell::fromXml(): Unknown or misplaced tag <" << nodeName
-           << "> (line:" << xmlTextReaderGetParserLineNumber(reader) << ")." << endl;
+      throw Error ( "Cell :: fromXml (): Unknown or misplaced tag. " );
       break;
     }
     return cell;

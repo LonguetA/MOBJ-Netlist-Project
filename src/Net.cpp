@@ -3,6 +3,7 @@
 #include "Instance.h"
 #include "Cell.h"
 #include "Line.h"
+#include "Error.h"
 namespace Netlist {
 
     //--------- TOXML ----------//
@@ -196,8 +197,7 @@ namespace Netlist {
 
 
         //ERREUR
-        std::cerr << "[ERROR] Net::fromXml(): Unknown or misplaced tag <" << nodeName
-        << "> (line:" << xmlTextReaderGetParserLineNumber(reader) << ")." << std::endl;
+        throw Error ( "Net :: fromXml (): Unknown or misplaced tag. " );
         return NULL;
       } 
       return n;

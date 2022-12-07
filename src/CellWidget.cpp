@@ -40,6 +40,7 @@ namespace Netlist {
   CellWidget::CellWidget ( QWidget* parent )
     : QWidget(parent)
     , cell_  (NULL)
+    , viewport_ ( Box (0 ,0 ,500 ,500))
   {
     setAttribute    ( Qt::WA_OpaquePaintEvent );
     setAttribute    ( Qt::WA_NoSystemBackground );
@@ -64,9 +65,75 @@ namespace Netlist {
   QSize  CellWidget::minimumSizeHint () const
   { return QSize(500,500); }
 
+  void CellWidget :: query ( unsigned int flags , QPainter & painter ) {
+    if (( not cell_ ) or ( not flags )) return ;
+    const vector <Instance *> & instances = cell_ -> getInstances ();
+    std::cout << instances.size() << std::endl;
 
-  void  CellWidget::resizeEvent ( QResizeEvent* event )
-  { repaint(); }
+    for ( size_t i = 0; i < instances . size () ; ++ i ) {
+      Point instPos = instances [ i ]  -> getPosition ();
+      const Symbol * symbol = instances [ i ] -> getMasterCell () -> getSymbol ();
+      if ( not symbol ) continue ;
+      if ( flags /*& InstanceShapes*/ ) {
+        const vector < Shape * >& shapes = symbol -> getShapes ();
+        for ( size_t j =0 ; j < shapes . size () ; ++ j ) {
+          BoxShape * boxShape = dynamic_cast <BoxShape *>( shapes [ j ]);
+          if ( boxShape ) {
+            Box box = boxShape -> getBoundingBox ();
+            QRect rect = boxToScreenRect ( box . translate ( instPos ));
+            painter . drawRect ( rect );
+          }
+          TermShape * termShape = dynamic_cast<TermShape *>(shapes[j]);
+          if (termShape){
+            Box box = termShape -> getBoundingBox ();
+            QRect rect = boxToScreenRect ( box . translate ( instPos ));
+            
+            painter . setPen ( QPen ( Qt :: red , 0 ) );
+            painter . setBrush ( QBrush ( Qt :: red ) );
+            painter . drawRect ( rect );
+          }
+
+          LineShape * lineShape = dynamic_cast<LineShape *>(shapes[j]);
+          if (lineShape){          
+            painter . setPen ( QPen ( Qt :: green , 0 ) );
+            painter . setBrush ( QBrush ( Qt :: green ) );
+            painter . drawLine ( xToScreenX((lineShape->getX1())+instPos.getX()) ,yToScreenY((lineShape->getY1())+instPos.getY()),xToScreenX((lineShape->getX2())+instPos.getX()) ,yToScreenY((lineShape->getY2())+instPos.getY()));
+          }
+
+          EllipseShape * ellipseShape = dynamic_cast<EllipseShape *>(shapes[j]);
+          if (ellipseShape){
+            Box box = ellipseShape -> getBoundingBox ();
+            QRect rect = boxToScreenRect ( box . translate ( instPos ));
+            
+            painter . setPen ( QPen ( Qt :: green , 0 ) );
+            painter . setBrush ( QBrush ( Qt :: black ) );
+            painter . drawEllipse ( rect );
+          }
+
+          ArcShape * arcShape = dynamic_cast<ArcShape *>(shapes[j]);
+          if (arcShape){
+            Box box = arcShape -> getBoundingBox ();
+            QRect rect = boxToScreenRect ( box . translate ( instPos ));
+            
+            painter . setPen ( QPen ( Qt :: green , 0 ) );
+            painter . setBrush ( QBrush ( Qt :: green ) );
+            painter . drawArc ( rect,arcShape->getStart()*16,arcShape->getSpan()*16);
+          }
+          
+        }
+
+      }
+    }
+  }
+
+  void  CellWidget::resizeEvent ( QResizeEvent* event ){ 
+    const QSize & size = event -> size ();
+    // Assume the resize is always done by drawing the bottom right corner .
+    viewport_.setX2 ( viewport_.getX1 () + size .width () );
+    viewport_.setY1 ( viewport_.getY2 () - size .height () );
+    std::cerr << " CellWidget :: resizeEvent ()  viewport_ : " << viewport_ << std::endl ;
+    repaint(); 
+  }
 
 
   void  CellWidget::paintEvent ( QPaintEvent* event )
@@ -89,8 +156,44 @@ namespace Netlist {
                    , frameHeight
                    );
 
-    painter.drawRect( nameRect );
-    painter.drawText( nameRect, Qt::AlignCenter, cellName );
+    //painter.drawRect( nameRect );
+    //painter.drawText( nameRect, Qt::AlignCenter, cellName );
+
+    query(1,painter);
+
+  }
+
+  void CellWidget :: keyPressEvent ( QKeyEvent * event ) {
+    event -> ignore ();
+    if ( event -> modifiers () & ( Qt :: ControlModifier | Qt::ShiftModifier )) return ;
+    switch ( event -> key ()) {
+      case Qt :: Key_Up : goUp (); break ;
+      case Qt :: Key_Down : goDown (); break ;
+      case Qt :: Key_Left : goLeft (); break ;
+      case Qt :: Key_Right : goRight (); break ;
+      default : return ;
+    }
+    event -> accept ();
+  }
+
+  void CellWidget :: goRight () {
+    viewport_ . translate ( Point (20 ,0) );
+    repaint ();
+  }
+
+  void CellWidget :: goUp () {
+    viewport_ . translate ( Point (0 ,20) );
+    repaint ();
+  }
+
+  void CellWidget :: goDown () {
+    viewport_ . translate ( Point (0 ,-20) );
+    repaint ();
+  }
+
+  void CellWidget :: goLeft () {
+    viewport_ . translate ( Point (-20 ,0) );
+    repaint ();
   }
 
 

@@ -83,7 +83,6 @@ namespace Netlist {
   void    CellViewer::setCell ( Cell* c){
     cellWidget_->setCell(c);
     instancesWidget_->setCell(c);
-    
   }
 
 

@@ -27,10 +27,29 @@ namespace Netlist {
       inline  Cell*   getCell            () const;
       virtual QSize   minimumSizeHint    () const;
       virtual void    resizeEvent        ( QResizeEvent* );
+      inline  int     xToScreenX ( int x ) const { return x - viewport_.getX1(); }
+      inline  int     yToScreenY ( int y ) const { return viewport_.getY2() - y;}
+      inline  int     screenXToX ( int x ) const { return x + viewport_.getX1();}
+      inline  int     screenYToY ( int y ) const { return viewport_.getY2() - y;}
+      inline  QRect   boxToScreenRect    ( const Box& b) const { return QRect(xToScreenX(b.getX1()),yToScreenY(b.getY2()),b.getWidth(),b.getHeight());}
+      inline  QPoint  pointToScreenPoint ( const Point& p) const {return QPoint(xToScreenX(p.getX()),yToScreenY(p.getY()));}
+      inline  Box     screenRectToBox    ( const QRect& r) const {return Box(screenXToX(r.x()),screenYToY(r.y() + r.height()),screenXToX(r.x() + r.width()),screenYToY(r.y()));}
+      inline  Point   screenPointToPoint ( const QPoint& p) const {return Point(screenXToX(p.x()),screenYToY(p.y()));}
+              void    query ( unsigned int flags , QPainter & painter );
+      
+
     protected:
       virtual void    paintEvent         ( QPaintEvent* );
+      virtual void    keyPressEvent      ( QKeyEvent* );
+
+    public slots:
+              void    goLeft             ();
+              void    goRight            ();
+              void    goUp               ();
+              void    goDown             ();
     private:
       Cell* cell_;
+      Box viewport_;
   };
 
 

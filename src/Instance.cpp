@@ -3,6 +3,7 @@
 #include "Instance.h"
 #include "Cell.h"
 #include "Shape.h"
+#include "Error.h"
 
 namespace Netlist {
 
@@ -27,6 +28,9 @@ namespace Netlist {
       }
 
       //Creation de l instance
+      Cell *ct = Cell::find(masterName);
+      if (!ct) throw Error ( "Instance::fromXml ():Unknown or misplaced tag. " );
+
       Instance *ins = new Instance(c,Cell::find(masterName),instName);
       ins->setPosition(atoi(xName.c_str()),atoi(yName.c_str()));
 

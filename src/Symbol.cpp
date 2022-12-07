@@ -9,7 +9,7 @@
 #include  "Instance.h"
 #include "Symbol.h"
 #include "Shape.h"
-
+#include "Error.h"
 
 namespace Netlist {
 
@@ -103,8 +103,7 @@ Symbol* Symbol::fromXml ( Cell*c, xmlTextReaderPtr reader){
           break;
         }
         //ERREUR
-        std::cerr << "[ERROR] Symbol::fromXml(): Unknown or misplaced tag <" << nodeName
-        << "> (line:" << xmlTextReaderGetParserLineNumber(reader) << ")." << std::endl;
+        throw Error ( "[ ERROR ] Symbol :: fromXml (): Unknown or misplaced tag. " );
         return NULL;
       } 
       return s;
