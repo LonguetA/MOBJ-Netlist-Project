@@ -124,6 +124,56 @@ namespace Netlist {
 
       }
     }
+
+    if (instances.size() == 0){
+      Symbol * s = cell_->getSymbol();
+      const vector < Shape * >& shapes = s -> getShapes ();
+      for ( size_t j =0 ; j < shapes . size () ; ++ j ) {
+            BoxShape * boxShape = dynamic_cast <BoxShape *>( shapes [ j ]);
+            if ( boxShape ) {
+              Box box = boxShape -> getBoundingBox ();
+              QRect rect = boxToScreenRect ( box.translate(Point(250,250)) );
+              painter . drawRect ( rect );
+            }
+            TermShape * termShape = dynamic_cast<TermShape *>(shapes[j]);
+            if (termShape){
+              Box box = termShape -> getBoundingBox ();
+              QRect rect = boxToScreenRect ( box.translate(Point(250,250))  );
+              
+              painter . setPen ( QPen ( Qt :: red , 0 ) );
+              painter . setBrush ( QBrush ( Qt :: red ) );
+              painter . drawRect ( rect );
+            }
+
+            LineShape * lineShape = dynamic_cast<LineShape *>(shapes[j]);
+            if (lineShape){          
+              painter . setPen ( QPen ( Qt :: green , 0 ) );
+              painter . setBrush ( QBrush ( Qt :: green ) );
+              painter . drawLine ( xToScreenX((lineShape->getX1()+250)) ,yToScreenY((lineShape->getY1())+250),xToScreenX((lineShape->getX2())+250) ,yToScreenY((lineShape->getY2())+250));
+            }
+
+            EllipseShape * ellipseShape = dynamic_cast<EllipseShape *>(shapes[j]);
+            if (ellipseShape){
+              Box box = ellipseShape -> getBoundingBox ();
+              QRect rect = boxToScreenRect ( box.translate(Point(250,250))  );
+              
+              painter . setPen ( QPen ( Qt :: green , 0 ) );
+              painter . setBrush ( QBrush ( Qt :: black ) );
+              painter . drawEllipse ( rect );
+            }
+
+            ArcShape * arcShape = dynamic_cast<ArcShape *>(shapes[j]);
+            if (arcShape){
+              Box box = arcShape -> getBoundingBox ();
+              QRect rect = boxToScreenRect ( box.translate(Point(250,250))  );
+              
+              painter . setPen ( QPen ( Qt :: green , 0 ) );
+              painter . setBrush ( QBrush ( Qt :: green ) );
+              painter . drawArc ( rect,arcShape->getStart()*16,arcShape->getSpan()*16);
+            }
+          
+          }
+        }
   }
 
   void  CellWidget::resizeEvent ( QResizeEvent* event ){ 
