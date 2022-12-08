@@ -53,6 +53,7 @@ namespace Netlist {
                     inline Term *   getTerm         () const {return term_;};
                     inline int      getX            () const {return x_;};
                     inline int      getY            () const {return y_;};
+                    inline NameAlign getAlign       () const {return align_;};
             static   TermShape * fromXml         ( Symbol* owner, xmlTextReaderPtr reader );
 
         private:

@@ -7,6 +7,7 @@
 #include  <QFont>
 #include  <QApplication>
 #include  "CellWidget.h"
+#include  <QPainterPath>
 #include  "Term.h"
 #include  "Instance.h"
 #include  "Symbol.h"
@@ -68,35 +69,77 @@ namespace Netlist {
   void CellWidget :: query ( unsigned int flags , QPainter & painter ) {
     if (( not cell_ ) or ( not flags )) return ;
     const vector <Instance *> & instances = cell_ -> getInstances ();
-    std::cout << instances.size() << std::endl;
+    
 
     for ( size_t i = 0; i < instances . size () ; ++ i ) {
       Point instPos = instances [ i ]  -> getPosition ();
+      QFont  bigFont = QFont( "URW Bookman L", 12 );
+      painter.setFont      ( bigFont );
+      painter . setPen ( QPen ( Qt :: darkGreen , 0 ) );
+      painter . setBrush ( QBrush ( Qt :: darkGreen ) );
+
+
+      painter.drawText( pointToScreenPoint(Point(instPos.getX(),instPos.getY()+5)), QString(instances [ i ]->getName().c_str() ));
+
       const Symbol * symbol = instances [ i ] -> getMasterCell () -> getSymbol ();
       if ( not symbol ) continue ;
-      if ( flags /*& InstanceShapes*/ ) {
+      if ( flags == 1 or flags == 4) {
         const vector < Shape * >& shapes = symbol -> getShapes ();
         for ( size_t j =0 ; j < shapes . size () ; ++ j ) {
+
+          int flagTxt = Qt::AlignCenter;
+          TermShape * termShape = dynamic_cast<TermShape *>(shapes[j]);
+          if (termShape){
+            Term *t = termShape->getTerm();
+            Box box = termShape -> getBoundingBox ();
+            QRect rect = boxToScreenRect ( box . translate ( instPos ));
+
+            QRect tag = boxToScreenRect ( Box(box.getX1()-12,box.getY1()-12,box.getX2()+12,box.getY2()+12) );
+            if (termShape->getAlign() == TermShape::TopLeft){
+              tag = boxToScreenRect ( Box(box.getX1()-12,box.getY1()-12,box.getX2()+40,box.getY2()+12) );
+              flagTxt = Qt::AlignTop;
+            }
+
+            if (termShape->getAlign() == TermShape::TopRight){
+              tag = boxToScreenRect ( Box(box.getX1()+12,box.getY1()-12,box.getX2()+40,box.getY2()+12) );
+              flagTxt = Qt::AlignTop;
+            }
+
+            if (termShape->getAlign() == TermShape::BottomLeft){
+              tag = boxToScreenRect ( Box(box.getX1()-12,box.getY1()-12,box.getX2()+40,box.getY2()+12) );
+              flagTxt = Qt::AlignBottom;
+            }
+           
+
+            if (termShape->getAlign() == TermShape:: BottomRight){
+              tag = boxToScreenRect ( Box(box.getX1()+12,box.getY1()-12,box.getX2()+40,box.getY2()+12) );
+              flagTxt = Qt::AlignBottom;
+            }
+            
+
+          
+            QFont  bigFont = QFont( "URW Bookman L", 10 );
+            painter.setFont      ( bigFont );
+            painter . setPen ( QPen ( Qt :: red , 0 ) );
+            painter . setBrush ( QBrush ( Qt :: red ) );
+            //painter . drawRect ( tag );
+            painter.drawText( tag, flagTxt, QString(t->getName().c_str() ));
+            painter . drawRect ( rect );
+          }
+
+          if (flags == 4) continue;
+
           BoxShape * boxShape = dynamic_cast <BoxShape *>( shapes [ j ]);
           if ( boxShape ) {
             Box box = boxShape -> getBoundingBox ();
             QRect rect = boxToScreenRect ( box . translate ( instPos ));
             painter . drawRect ( rect );
           }
-          TermShape * termShape = dynamic_cast<TermShape *>(shapes[j]);
-          if (termShape){
-            Box box = termShape -> getBoundingBox ();
-            QRect rect = boxToScreenRect ( box . translate ( instPos ));
-            
-            painter . setPen ( QPen ( Qt :: red , 0 ) );
-            painter . setBrush ( QBrush ( Qt :: red ) );
-            painter . drawRect ( rect );
-          }
 
           LineShape * lineShape = dynamic_cast<LineShape *>(shapes[j]);
           if (lineShape){          
-            painter . setPen ( QPen ( Qt :: green , 0 ) );
-            painter . setBrush ( QBrush ( Qt :: green ) );
+            painter . setPen ( QPen ( Qt ::  darkGreen , 2 ) );
+            painter . setBrush ( QBrush ( Qt ::  darkGreen ) );
             painter . drawLine ( xToScreenX((lineShape->getX1())+instPos.getX()) ,yToScreenY((lineShape->getY1())+instPos.getY()),xToScreenX((lineShape->getX2())+instPos.getX()) ,yToScreenY((lineShape->getY2())+instPos.getY()));
           }
 
@@ -105,7 +148,7 @@ namespace Netlist {
             Box box = ellipseShape -> getBoundingBox ();
             QRect rect = boxToScreenRect ( box . translate ( instPos ));
             
-            painter . setPen ( QPen ( Qt :: green , 0 ) );
+            painter . setPen ( QPen ( Qt ::  darkGreen , 2 ) );
             painter . setBrush ( QBrush ( Qt :: black ) );
             painter . drawEllipse ( rect );
           }
@@ -115,65 +158,170 @@ namespace Netlist {
             Box box = arcShape -> getBoundingBox ();
             QRect rect = boxToScreenRect ( box . translate ( instPos ));
             
-            painter . setPen ( QPen ( Qt :: green , 0 ) );
-            painter . setBrush ( QBrush ( Qt :: green ) );
+            painter . setPen ( QPen ( Qt :: darkGreen , 2 ) );
+            painter . setBrush ( QBrush ( Qt ::  darkGreen ) );
             painter . drawArc ( rect,arcShape->getStart()*16,arcShape->getSpan()*16);
           }
-          
         }
-
       }
     }
+    if (flags == 2){
+      std::vector<Net *> nets = cell_->getNets();
+      if (nets.size() != 0){
+        for (size_t i = 0; i < nets . size () ; ++ i ){
+          std::vector<Line *> ls = nets[i]->getLines();
 
-    if (instances.size() == 0){
-      Symbol * s = cell_->getSymbol();
-      const vector < Shape * >& shapes = s -> getShapes ();
-      for ( size_t j =0 ; j < shapes . size () ; ++ j ) {
-            BoxShape * boxShape = dynamic_cast <BoxShape *>( shapes [ j ]);
-            if ( boxShape ) {
-              Box box = boxShape -> getBoundingBox ();
-              QRect rect = boxToScreenRect ( box.translate(Point(250,250)) );
-              painter . drawRect ( rect );
-            }
-            TermShape * termShape = dynamic_cast<TermShape *>(shapes[j]);
-            if (termShape){
-              Box box = termShape -> getBoundingBox ();
-              QRect rect = boxToScreenRect ( box.translate(Point(250,250))  );
-              
-              painter . setPen ( QPen ( Qt :: red , 0 ) );
-              painter . setBrush ( QBrush ( Qt :: red ) );
-              painter . drawRect ( rect );
-            }
+          for (size_t j = 0 ; j < ls.size() ; j++){
+            painter . setPen ( QPen ( Qt :: cyan , 1 ) );
+            painter . setBrush ( QBrush ( Qt :: cyan ) );
 
-            LineShape * lineShape = dynamic_cast<LineShape *>(shapes[j]);
-            if (lineShape){          
-              painter . setPen ( QPen ( Qt :: green , 0 ) );
-              painter . setBrush ( QBrush ( Qt :: green ) );
-              painter . drawLine ( xToScreenX((lineShape->getX1()+250)) ,yToScreenY((lineShape->getY1())+250),xToScreenX((lineShape->getX2())+250) ,yToScreenY((lineShape->getY2())+250));
-            }
+            Point pS = ls[j]->getSourcePosition();
+            Point pT = ls[j]->getTargetPosition();
 
-            EllipseShape * ellipseShape = dynamic_cast<EllipseShape *>(shapes[j]);
-            if (ellipseShape){
-              Box box = ellipseShape -> getBoundingBox ();
-              QRect rect = boxToScreenRect ( box.translate(Point(250,250))  );
-              
-              painter . setPen ( QPen ( Qt :: green , 0 ) );
-              painter . setBrush ( QBrush ( Qt :: black ) );
-              painter . drawEllipse ( rect );
+            if (ls[j]->getTarget()->getLines().size() > 2){
+              painter. drawEllipse(xToScreenX(pT.getX()-5),yToScreenY(pT.getY()+5),10,10);
             }
-
-            ArcShape * arcShape = dynamic_cast<ArcShape *>(shapes[j]);
-            if (arcShape){
-              Box box = arcShape -> getBoundingBox ();
-              QRect rect = boxToScreenRect ( box.translate(Point(250,250))  );
-              
-              painter . setPen ( QPen ( Qt :: green , 0 ) );
-              painter . setBrush ( QBrush ( Qt :: green ) );
-              painter . drawArc ( rect,arcShape->getStart()*16,arcShape->getSpan()*16);
-            }
-          
+            painter . drawLine(pointToScreenPoint(pS),pointToScreenPoint(pT));
           }
         }
+      }
+    }
+    if (flags == 3 or flags == 4){
+      if (instances.size() == 0){
+        Symbol * s = cell_->getSymbol();
+        const vector < Shape * >& shapes = s -> getShapes ();
+        for ( size_t j =0 ; j < shapes . size () ; ++ j ) {
+              BoxShape * boxShape = dynamic_cast <BoxShape *>( shapes [ j ]);
+              if ( boxShape ) {
+                Box box = boxShape -> getBoundingBox ();
+                QRect rect = boxToScreenRect ( box.translate(Point(250,250)) );
+                painter . drawRect ( rect );
+              }
+              TermShape * termShape = dynamic_cast<TermShape *>(shapes[j]);
+              if (termShape){
+                Term *t = termShape->getTerm();
+                Box box = termShape -> getBoundingBox ();
+                int flagTxt;
+                QRect rect = boxToScreenRect ( box.translate(Point(250,250))  );
+              
+                QRect tag = boxToScreenRect ( Box(box.getX1()-12,box.getY1()-12,box.getX2()+40,box.getY2()+12) );
+                if (termShape->getAlign() == TermShape::TopLeft){
+                  tag = boxToScreenRect ( Box(box.getX1()-12,box.getY1()-12,box.getX2()+40,box.getY2()+12) );
+                  flagTxt = Qt::AlignTop;
+                }
+
+                if (termShape->getAlign() == TermShape::TopRight){
+                  tag = boxToScreenRect ( Box(box.getX1()+12,box.getY1()-12,box.getX2()+40,box.getY2()+12) );
+                  flagTxt = Qt::AlignTop;
+                }
+
+                if (termShape->getAlign() == TermShape::BottomLeft){
+                  tag = boxToScreenRect ( Box(box.getX1()-12,box.getY1()-12,box.getX2()+40,box.getY2()+12) );
+                  flagTxt = Qt::AlignBottom;
+                }
+              
+
+                if (termShape->getAlign() == TermShape:: BottomRight){
+                  tag = boxToScreenRect ( Box(box.getX1()+12,box.getY1()-12,box.getX2()+40,box.getY2()+12) );
+                  flagTxt = Qt::AlignBottom;
+                }
+
+                QFont  bigFont = QFont( "URW Bookman L", 10 );
+                painter.setFont      ( bigFont );
+                painter . setPen ( QPen ( Qt :: red , 0 ) );
+                painter . setBrush ( QBrush ( Qt :: red ) );
+                painter . drawRect ( rect );
+                painter . setPen ( QPen ( Qt :: red , 0 ) );
+                painter . setBrush ( QBrush ( Qt :: red ) );
+                //painter . drawRect ( tag );
+                painter.drawText( tag, flagTxt, QString(t->getName().c_str() ));
+              }
+
+              if (flags == 4) continue;
+
+              LineShape * lineShape = dynamic_cast<LineShape *>(shapes[j]);
+              if (lineShape){          
+                painter . setPen ( QPen ( Qt ::  darkGreen , 2 ) );
+                painter . setBrush ( QBrush ( Qt ::  darkGreen ) );
+                painter . drawLine ( xToScreenX((lineShape->getX1()+250)) ,yToScreenY((lineShape->getY1())+250),xToScreenX((lineShape->getX2())+250) ,yToScreenY((lineShape->getY2())+250));
+              }
+
+              EllipseShape * ellipseShape = dynamic_cast<EllipseShape *>(shapes[j]);
+              if (ellipseShape){
+                Box box = ellipseShape -> getBoundingBox ();
+                QRect rect = boxToScreenRect ( box.translate(Point(250,250))  );
+                
+                painter . setPen ( QPen ( Qt ::  darkGreen , 2 ) );
+                painter . setBrush ( QBrush ( Qt :: black ) );
+                painter . drawEllipse ( rect );
+              }
+
+              ArcShape * arcShape = dynamic_cast<ArcShape *>(shapes[j]);
+              if (arcShape){
+                Box box = arcShape -> getBoundingBox ();
+                QRect rect = boxToScreenRect ( box.translate(Point(250,250))  );
+                
+                painter . setPen ( QPen ( Qt ::  darkGreen , 2 ) );
+                painter . setBrush ( QBrush ( Qt ::  darkGreen ) );
+                painter . drawArc ( rect,arcShape->getStart()*16,arcShape->getSpan()*16);
+              }
+            }
+          }
+          else{
+            Symbol * s = cell_->getSymbol();
+            const vector < Shape * >& shapes = s -> getShapes ();
+            for ( size_t j =0 ; j < shapes . size () ; ++ j ) {
+                TermShape * termShape = dynamic_cast<TermShape *>(shapes[j]);
+                if (termShape){
+                  Term *t = termShape->getTerm();
+                Box box = termShape -> getBoundingBox ();
+                int flagTxt;
+                QRect rect = boxToScreenRect ( Box(t->getPosition().getX()-5,t->getPosition().getY()-5,t->getPosition().getX()+5,t->getPosition().getY()+5) );
+                QPainterPath path;
+                path.moveTo(rect.left(), rect.top());
+                path.lineTo(rect.bottomLeft());
+                path.lineTo(rect.right(),rect.top() + (rect.height()/2));
+                path.lineTo(rect.topLeft());
+
+                painter.fillPath(path, QBrush(QColor ("red")));
+
+                QRect tag = boxToScreenRect ( Box(box.getX1()-12,box.getY1()-12,box.getX2()+40,box.getY2()+12) );
+                if (termShape->getAlign() == TermShape::TopLeft){
+                  tag = boxToScreenRect ( Box(t->getPosition().getX()-5-12,t->getPosition().getY()-5-12,t->getPosition().getX()+5+40,t->getPosition().getY()+12) );
+                  flagTxt = Qt::AlignTop;
+                }
+
+                if (termShape->getAlign() == TermShape::TopRight){
+                  tag = boxToScreenRect ( Box(box.getX1()+12,box.getY1()-12,box.getX2()+40,box.getY2()+12) );
+                  flagTxt = Qt::AlignTop;
+                }
+
+                if (termShape->getAlign() == TermShape::BottomLeft){
+                  tag = boxToScreenRect ( Box(box.getX1()-12,box.getY1()-12,box.getX2()+40,box.getY2()+12) );
+                  flagTxt = Qt::AlignBottom;
+                }
+              
+
+                if (termShape->getAlign() == TermShape:: BottomRight){
+                  tag = boxToScreenRect ( Box(box.getX1()+12,box.getY1()-12,box.getX2()+40,box.getY2()+12) );
+                  flagTxt = Qt::AlignBottom;
+                }
+
+                QFont  bigFont = QFont( "URW Bookman L", 10 );
+                painter.setFont      ( bigFont );
+                painter . setPen ( QPen ( Qt :: red , 0 ) );
+                painter . setBrush ( QBrush ( Qt :: red ) );
+                //painter . drawRect ( rect );
+                painter . setPen ( QPen ( Qt :: red , 0 ) );
+                painter . setBrush ( QBrush ( Qt :: red ) );
+                //painter . drawRect ( tag );
+                painter.drawText( tag, flagTxt, QString(t->getName().c_str() ));
+                  }
+                }
+            
+          }
+        }
+
   }
 
   void  CellWidget::resizeEvent ( QResizeEvent* event ){ 
@@ -209,8 +357,10 @@ namespace Netlist {
     //painter.drawRect( nameRect );
     //painter.drawText( nameRect, Qt::AlignCenter, cellName );
 
+    query(2,painter);
+    query(3,painter);
     query(1,painter);
-
+    query(4,painter);
   }
 
   void CellWidget :: keyPressEvent ( QKeyEvent * event ) {
