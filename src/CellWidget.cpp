@@ -79,7 +79,7 @@ namespace Netlist {
       painter . setBrush ( QBrush ( Qt :: darkGreen ) );
 
 
-      painter.drawText( pointToScreenPoint(Point(instPos.getX(),instPos.getY()+5)), QString(instances [ i ]->getName().c_str() ));
+      painter.drawText( pointToScreenPoint(Point(instPos.getX(),instPos.getY())), QString(instances [ i ]->getName().c_str() ));
 
       const Symbol * symbol = instances [ i ] -> getMasterCell () -> getSymbol ();
       if ( not symbol ) continue ;
@@ -132,6 +132,8 @@ namespace Netlist {
           BoxShape * boxShape = dynamic_cast <BoxShape *>( shapes [ j ]);
           if ( boxShape ) {
             Box box = boxShape -> getBoundingBox ();
+            painter . setPen ( QPen ( Qt ::  darkGreen , 2 ) );
+            painter . setBrush ( QBrush ( Qt ::  black ) );
             QRect rect = boxToScreenRect ( box . translate ( instPos ));
             painter . drawRect ( rect );
           }
@@ -276,38 +278,61 @@ namespace Netlist {
                   Term *t = termShape->getTerm();
                 Box box = termShape -> getBoundingBox ();
                 int flagTxt;
-                QRect rect = boxToScreenRect ( Box(t->getPosition().getX()-5,t->getPosition().getY()-5,t->getPosition().getX()+5,t->getPosition().getY()+5) );
+                QRect rect = boxToScreenRect ( Box(t->getPosition().getX()-10,t->getPosition().getY()-10,t->getPosition().getX()+10,t->getPosition().getY()+10) );
                 QPainterPath path;
-                path.moveTo(rect.left(), rect.top());
-                path.lineTo(rect.bottomLeft());
-                path.lineTo(rect.right(),rect.top() + (rect.height()/2));
-                path.lineTo(rect.topLeft());
 
-                painter.fillPath(path, QBrush(QColor ("red")));
+                if (t->getDirection() == Term::In){
+                  path.moveTo(rect.left(), rect.top());
+                  path.lineTo(rect.left(),rect.bottom());
+                  path.lineTo(rect.right(),rect.top() + (rect.height()/2));
+                  path.lineTo(rect.topLeft());
+  
+                  rect = boxToScreenRect ( Box(t->getPosition().getX()-30,t->getPosition().getY()-8,t->getPosition().getX()-10,t->getPosition().getY()+10) );
+                }
+                else{
+                  path.moveTo(rect.right(), rect.top());
+                  path.lineTo(rect.right(),rect.bottom());
+                  path.lineTo(rect.left(),rect.top() + (rect.height()/2));
+                  path.lineTo(rect.topRight());
+
+                  rect = boxToScreenRect ( Box(t->getPosition().getX()+9,t->getPosition().getY()-8,t->getPosition().getX()+30,t->getPosition().getY()+10) );
+                } 
+                painter.fillPath(path, QBrush(QColor ("red"))); 
+                painter.drawRect(rect);
 
                 QRect tag = boxToScreenRect ( Box(box.getX1()-12,box.getY1()-12,box.getX2()+40,box.getY2()+12) );
                 if (termShape->getAlign() == TermShape::TopLeft){
-                  tag = boxToScreenRect ( Box(t->getPosition().getX()-5-12,t->getPosition().getY()-5-12,t->getPosition().getX()+5+40,t->getPosition().getY()+12) );
+                  if (t->getDirection() == Term::In){
+                    tag = boxToScreenRect ( Box(t->getPosition().getX()-40,t->getPosition().getY(),t->getPosition().getX(),t->getPosition().getY()+40) );
+                  }
+                  else{
+                    tag = boxToScreenRect ( Box(t->getPosition().getX()-10,t->getPosition().getY(),t->getPosition().getX()+30,t->getPosition().getY()+40) );
+                  }
                   flagTxt = Qt::AlignTop;
                 }
 
                 if (termShape->getAlign() == TermShape::TopRight){
-                  tag = boxToScreenRect ( Box(box.getX1()+12,box.getY1()-12,box.getX2()+40,box.getY2()+12) );
+                  if (t->getDirection() == Term::In){
+                    tag = boxToScreenRect ( Box(t->getPosition().getX()+10,t->getPosition().getY(),t->getPosition().getX()+50,t->getPosition().getY()+40) );
+                  }
+                  else{
+                    tag = boxToScreenRect ( Box(t->getPosition().getX()+30,t->getPosition().getY(),t->getPosition().getX()+70,t->getPosition().getY()+40) );
+                  }
                   flagTxt = Qt::AlignTop;
                 }
 
                 if (termShape->getAlign() == TermShape::BottomLeft){
-                  tag = boxToScreenRect ( Box(box.getX1()-12,box.getY1()-12,box.getX2()+40,box.getY2()+12) );
+                  tag = boxToScreenRect ( Box(t->getPosition().getX(),t->getPosition().getY(),t->getPosition().getX(),t->getPosition().getY()) );
                   flagTxt = Qt::AlignBottom;
                 }
               
 
                 if (termShape->getAlign() == TermShape:: BottomRight){
-                  tag = boxToScreenRect ( Box(box.getX1()+12,box.getY1()-12,box.getX2()+40,box.getY2()+12) );
+                  tag = boxToScreenRect ( Box(t->getPosition().getX(),t->getPosition().getY(),t->getPosition().getX(),t->getPosition().getY()) );
                   flagTxt = Qt::AlignBottom;
                 }
 
-                QFont  bigFont = QFont( "URW Bookman L", 10 );
+                QFont  bigFont = QFont( "URW Bookman L", 20 );
                 painter.setFont      ( bigFont );
                 painter . setPen ( QPen ( Qt :: red , 0 ) );
                 painter . setBrush ( QBrush ( Qt :: red ) );

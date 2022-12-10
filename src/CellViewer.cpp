@@ -43,7 +43,7 @@ namespace Netlist {
     
     action = new QAction ( "&Cell" , this );
     action -> setStatusTip ( "Load a Cell from disk" );
-    action -> setShortcut ( QKeySequence ( "CTRL+O" ) );
+    action -> setShortcut ( QKeySequence ( "CTRL+C" ) );
     action -> setVisible ( true );
     fileMenu -> addAction ( action );
     connect ( action , SIGNAL ( triggered ()) , this , SLOT ( showCellsLib  ()) );

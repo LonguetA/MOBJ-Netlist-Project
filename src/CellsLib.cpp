@@ -29,6 +29,7 @@ CellsLib::CellsLib(QWidget* parent): QWidget( parent )
     QHeaderView * verticalHeader = view_ -> verticalHeader ();
     verticalHeader -> setVisible ( false );
     load_ -> setText ( " Load " );
+    load_ -> setDefault ( true );
 
     QHBoxLayout * hLayout = new QHBoxLayout ();
     hLayout -> addStretch ();
