@@ -28,7 +28,6 @@ int main ( int argc , char * argv []) {
     Cell* xor2      = Cell::load( "xor2" );
     QApplication * qa = new QApplication ( argc , argv );
     CellViewer * viewer = new CellViewer ();
-    viewer -> setCell ( vdd );
     viewer -> show ();
     int rvalue = qa -> exec ();
     delete qa ;

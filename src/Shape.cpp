@@ -131,7 +131,6 @@ namespace Netlist {
     LineShape::LineShape( Symbol * owner, int x1 , int y1 , int x2 , int y2 ):Shape(owner),x1_(x1),y1_(y1),x2_(x2),y2_(y2){}
     LineShape::~LineShape(){}
     Box LineShape::getBoundingBox  () const {
-        std::cout << "X1 : " << x1_ << " X2 : " << x2_ << " Y1 : " << y1_ << " Y2 : " << y2_ << std::endl; 
         return Box(min(x1_,x2_) , min(y1_,y2_), max(x2_,x1_) ,max(y2_,y1_)) ;}
 
     void LineShape::toXml ( std::ostream & os) const {

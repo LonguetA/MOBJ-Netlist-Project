@@ -72,7 +72,7 @@ namespace Netlist {
     , instances_()
     , nets_     ()
     , maxNetIds_(0)
-  {
+  { 
     if (find(name)) {
       cerr << "[ERROR] Attempt to create duplicate of Cell <" << name << ">.\n"
            << "        Aborting..." << endl;
@@ -176,7 +176,7 @@ namespace Netlist {
 
 
   void  Cell::remove ( Instance* instance )
-  {
+  { 
     for ( vector<Instance*>::iterator iinst=instances_.begin() ; iinst != instances_.end() ; ++iinst ) {
       if (*iinst == instance) instances_.erase( iinst );
     }
@@ -184,8 +184,10 @@ namespace Netlist {
 
 
   void  Cell::remove ( Term* term )
-  {
+  { 
+
     for ( vector<Term*>::iterator iterm=terms_.begin() ; iterm != terms_.end() ; ++iterm ) {
+      if (terms_.size() == 0) return;
       if (*iterm == term) terms_.erase( iterm );
     }
   }
@@ -311,7 +313,15 @@ namespace Netlist {
             state = BeginNets;
             continue;
           } else {
-            if (Instance::fromXml(cell,reader)) continue;
+            try {
+              if (Instance::fromXml(cell,reader)) continue;
+
+            }catch(Error &e){
+              std::cerr << e.what() << std::endl ;
+              std::cerr << "Cell :: fromXml (): Unknown or misplaced tag. "  << std::endl;
+              delete cell;
+              return NULL;
+            }
           }
           break;
         case BeginNets:

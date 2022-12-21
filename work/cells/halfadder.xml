@@ -3,8 +3,8 @@
   <terms>
     <term name="a"    direction="In"  x="0"   y="120"/>
     <term name="b"    direction="In"  x="0"   y="200"/>
-    <term name="sout" direction="Out" x="300" y="80" />
-    <term name="cout" direction="Out" x="300" y="230"/>
+    <term name="cout" direction="Out" x="300" y="80" />
+    <term name="sout" direction="Out" x="300" y="230"/>
   </terms>
   <instances>
     <instance name="xor2_1" mastercell="xor2" x="150" y="200"/>
@@ -37,13 +37,13 @@
       <line source="13" target="15"/>
       <line source="15" target="11"/>
     </net>
-    <net name="sout" type="External">
-      <node term="sout"                id="6"/>
+    <net name="cout" type="External">
+      <node term="cout"                id="6"/>
       <node term="q" instance="and2_1" id="7"/>
       <line source="6" target="7"/>
     </net>
-    <net name="cout" type="External">
-      <node term="cout"                id="8"/>
+    <net name="sout" type="External">
+      <node term="sout"                id="8"/>
       <node term="q" instance="xor2_1" id="9"/>
       <line source="8" target="9"/>
     </net>

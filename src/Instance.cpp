@@ -29,7 +29,7 @@ namespace Netlist {
 
       //Creation de l instance
       Cell *ct = Cell::find(masterName);
-      if (!ct) throw Error ( "Instance::fromXml ():Unknown or misplaced tag. " );
+      if (!ct) throw Error ( "Instance::fromXml (): Unknown cell : " + masterName );
 
       Instance *ins = new Instance(c,Cell::find(masterName),instName);
       ins->setPosition(atoi(xName.c_str()),atoi(yName.c_str()));

@@ -36,7 +36,6 @@ namespace Netlist {
                     virtual void        toXml           ( std::ostream& ) const;
             static   BoxShape *     fromXml         ( Symbol* owner, xmlTextReaderPtr reader );
         private:
-            Symbol * owner_ ;
             Box box_ ;
     };
 
@@ -74,7 +73,6 @@ namespace Netlist {
         inline  int     getY2           () const {return y2_;}
         static   LineShape * fromXml         ( Symbol* owner, xmlTextReaderPtr reader );
     private :
-        Symbol * owner_ ;
         int x1_ , y1_ , x2_ , y2_ ;
     };
 

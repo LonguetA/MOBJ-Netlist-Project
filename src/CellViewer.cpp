@@ -1,5 +1,5 @@
 #include "CellViewer.h"
-
+#include "Error.h"
 
 namespace Netlist {
   CellViewer :: CellViewer ( QWidget * parent ) 
@@ -90,13 +90,14 @@ namespace Netlist {
   void CellViewer::openCell (){
     QString cellName;
     if ( OpenCellDialog::run ( cellName)) {
-      
       Cell *c = Cell::find(cellName.toStdString());
       if (c) {
         setCell(c);
       }
       else {
-        setCell(Cell::load(cellName.toStdString()));
+        Cell *c1;
+        c1 = Cell::load(cellName.toStdString());
+        if (c1) setCell(c1);
         emit cellLoaded();
       }
     }

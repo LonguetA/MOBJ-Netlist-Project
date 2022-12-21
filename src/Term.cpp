@@ -42,7 +42,6 @@ namespace Netlist {
     Term::~Term (){
       //Deconnection du term
       if (net_ != NULL) setNet(NULL);
-
       //Retrait du term à l'instance ou à la cell en fonction de son type
       if (isInternal()){
         Instance *ins = static_cast<Instance*> (owner_);
