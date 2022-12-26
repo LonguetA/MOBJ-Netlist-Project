@@ -10,14 +10,25 @@ class CellViewer;
 
 
 class CellsLib : public QWidget {
-    Q_OBJECT;
+
+  Q_OBJECT;
   public:
+
+  //-----------------------CTOR------------------------------//
                        CellsLib       ( QWidget* parent=NULL );
+
+  //-----------------------SETTEUR------------------------------//
            void        setCellViewer  ( CellViewer* );
+
+  //-----------------------GETTEUR------------------------------//
            int         getSelectedRow () const;
     inline CellsModel* getBaseModel   ();
+
+  //-----------------------SLOT------------------------------//
   public slots:
            void        load           ();
+
+        
   private:
     CellViewer*  cellViewer_;
     CellsModel*  baseModel_;
@@ -25,7 +36,7 @@ class CellsLib : public QWidget {
     QPushButton* load_;
 };
 
-inline CellsModel* CellsLib::getBaseModel   (){ return baseModel_;}
+  inline CellsModel* CellsLib::getBaseModel   (){ return baseModel_;}
 }
 
 #endif

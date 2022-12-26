@@ -26,17 +26,28 @@ namespace Netlist {
   class CellViewer : public QMainWindow {
     Q_OBJECT ;
     public :
+
+    //-----------------------CTOR------------------------------//
                       CellViewer  ( QWidget * parent = NULL );
-        virtual       ~CellViewer ();
+    
+    //-----------------------DTOR------------------------------//
+      virtual         ~CellViewer ();
+
+    //-----------------------GETTEUR------------------------------//
               Cell *  getCell     () const ;
+
+    //-----------------------SLOT------------------------------//
     public slots :
-            void      setCell             ( Cell* );
-            void      saveCell            ();
-            void      openCell            ();
-            void      showInstancesWidget       ();
-            void      showCellsLib        ();
+              void    setCell             ( Cell* );
+              void    saveCell            ();
+              void    openCell            ();
+              void    showInstancesWidget       ();
+              void    showCellsLib        ();
+
+
+    //-----------------------SIGNAL------------------------------//
     signals : 
-            void      cellLoaded();
+              void     cellLoaded();
             
     private :
       CellWidget * cellWidget_ ;
