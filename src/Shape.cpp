@@ -13,7 +13,9 @@ namespace Netlist {
 
     using namespace std;
 
+    /************************SHAPE****************************************/
 
+    //-----------------------XML------------------------------//
     Shape* Shape::fromXml ( Symbol* owner, xmlTextReaderPtr reader )
     {
     // Factory-like method.
@@ -48,12 +50,26 @@ namespace Netlist {
 
       return shape;
     }
+
+    //-----------------------CTOR------------------------------//
     Shape::Shape ( Symbol * owner ):owner_( owner ) { owner->add( this );}
+
+    //-----------------------DTOR------------------------------//
     Shape::~Shape (){ owner_->remove( this ); }
 
+
+    /************************BOXSHAPE****************************************/
+
+    //-----------------------CTOR------------------------------//
     BoxShape::BoxShape  ( Symbol * owner, const Box & box):Shape(owner),box_(box){}
+
+    //-----------------------DTOR------------------------------//
     BoxShape::~BoxShape (){}
+
+    //-----------------------GETTEUR------------------------------//
     Box BoxShape::getBoundingBox() const { return box_;}
+
+    //-----------------------XML------------------------------//
     void BoxShape::toXml ( std::ostream& os) const{
         os << indent << "<box x1=\"" << box_.getX1() << "\" y1=\"" << box_.getY1() << "\" x2=\"" << box_.getX2() << "\" y2=\"" << box_.getY2() << "\"/>" << std::endl;
     }
@@ -78,11 +94,18 @@ namespace Netlist {
     }
 
 
+    /************************TERMSHAPE****************************************/
+
+    //-----------------------CTOR------------------------------//
     TermShape::TermShape ( Symbol * owner , std::string name , int x1 , int y1 ,NameAlign align):Shape( owner ),term_( NULL ),x_( x1 ),y_( y1 ),align_(align) {
         Cell * cell = owner->getCell ();
         term_ = cell->getTerm ( name );
     }
+
+    //-----------------------DTOR------------------------------//
     TermShape::~TermShape () { }
+
+    //-----------------------GETTEUR------------------------------//
     Box TermShape::getBoundingBox () const { return Box( x_-2 , y_-2 , x_+2 , y_+2 ); }
 
     string TermShape::alignToString(NameAlign align){
@@ -106,6 +129,7 @@ namespace Netlist {
         if (str == "bottom_right") return BottomRight;
     }
 
+    //-----------------------XML------------------------------//
     void TermShape::toXml(std::ostream & os) const{
         os << indent << "<term name=\"" << term_->getName() << "\" x1=" << getX() << "\" y1=\"" << getY() << "\" align=" << alignToString(align_) << "/>" << std::endl;
     }
@@ -128,11 +152,20 @@ namespace Netlist {
         return t;
     }
 
+    /************************LINESHAPE****************************************/
+
+    //-----------------------CTOR------------------------------//
     LineShape::LineShape( Symbol * owner, int x1 , int y1 , int x2 , int y2 ):Shape(owner),x1_(x1),y1_(y1),x2_(x2),y2_(y2){}
+    
+    //-----------------------DTOR------------------------------//
     LineShape::~LineShape(){}
+
+    //-----------------------GETTEUR------------------------------//
     Box LineShape::getBoundingBox  () const {
         return Box(min(x1_,x2_) , min(y1_,y2_), max(x2_,x1_) ,max(y2_,y1_)) ;}
 
+
+    //-----------------------XML------------------------------//
     void LineShape::toXml ( std::ostream & os) const {
         os << indent << "<line x1=" << getX1() << "\" y1=\"" << getY1() << "\" x2=" << getX2() << "\" y2=\"" << getY2() << "\"/>" << std::endl;
     }
@@ -156,9 +189,19 @@ namespace Netlist {
         return l;
     }
 
+    /************************ARCSHAPE****************************************/
+
+
+    //-----------------------CTOR------------------------------//
     ArcShape::ArcShape (Symbol * owner,const Box & b,int start, int span):Shape(owner),box_(b),start_(start),span_(span){}
+    
+    //-----------------------DTOR------------------------------//
     ArcShape::~ArcShape (){}
+
+    //-----------------------GETTEUR------------------------------//
     Box ArcShape::getBoundingBox () const {return box_;}
+
+    //-----------------------XML------------------------------//
     void ArcShape::toXml(std::ostream & os) const {
         os << indent << "<arc x1=\"" << box_.getX1() << "\" y1=\"" << box_.getY1() << "\" x2=\"" << box_.getX2() << "\" y2=\"" << box_.getY2() << 
         "\" start=\"" << start_ << "\" span=\"" << span_<<"\"/>" << std::endl;
@@ -186,9 +229,18 @@ namespace Netlist {
         return arc;
     }
 
+    /************************ELLIPSESHAPE****************************************/
+
+    //-----------------------CTOR------------------------------//
     EllipseShape::EllipseShape (Symbol *owner,const Box &b):Shape(owner),box_(b){}
+
+    //-----------------------DTOR------------------------------//
     EllipseShape::~EllipseShape (){}
+
+    //-----------------------GETTEUR------------------------------//
     Box EllipseShape::getBoundingBox () const { return box_;}
+
+    //-----------------------XML------------------------------//
     void EllipseShape::toXml (std::ostream & os) const {
         os << indent << "<ellipse x1=\"" << box_.getX1() << "\" y1=\"" << box_.getY1() << "\" x2=\"" << box_.getX2() << "\" y2=\"" << box_.getY2() << "\"/>" << std::endl;
     }

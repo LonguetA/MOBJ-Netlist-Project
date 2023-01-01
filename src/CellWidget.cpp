@@ -340,10 +340,10 @@ namespace Netlist {
       }
     }
 
-    /**********************AFFICHAGE DES SYMBOL************************/
+    /**********************AFFICHAGE DES SYMBOLS************************/
     if (flags == 3 or flags == 4){
 
-      //Si la Cell n'a pas d'instance
+      //Si la Cell n'a pas d'instance on affichage sa representation symbol
       if (instances.size() == 0){
 
         //On recupere le symbol
@@ -455,12 +455,13 @@ namespace Netlist {
             }
           }
 
-          //Si on a des instances on affiche les termShapes de la cellule
+          //Sinon on affiche les termShapes de la cellule
           else{
 
 
             Symbol * s = cell_->getSymbol();
 
+            //Si on a des shapes
             if (s->getShapes().size() != 0){
 
               //On recupere les Shapes
@@ -651,7 +652,7 @@ namespace Netlist {
     else painter.drawText(nameRect2,Qt::AlignLeft,cellName);
 
 
-    //Dessin de fils
+    //Dessin des fils
     query(2,painter);
 
     //Dessin des Term de la cellule
