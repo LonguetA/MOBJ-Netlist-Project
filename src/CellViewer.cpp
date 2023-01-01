@@ -155,6 +155,14 @@ namespace Netlist {
         Cell *c1;
         c1 = Cell::load(cellName.toStdString());
         if (c1) setCell(c1);
+        else {
+
+          //Si probleme d'ouverture
+          std::string s = "Unable to Open : \"" + cellName.toStdString() + "\" see cerr for more info";
+          if (ErrorCellDialog::run(s)){
+            return;
+          }
+        }
 
         //On envoie le signal pour que la table de la liste de Cell soit mise a jour dans CellsModel
         emit cellLoaded();

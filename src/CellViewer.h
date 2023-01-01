@@ -14,6 +14,7 @@
 #include "CellWidget.h"
 #include "SaveCellDialog.h"
 #include "OpenCellDialog.h"
+#include "ErrorCellDialog.h"
 #include "InstancesWidget.h"
 #include "CellsLib.h"
 #include "CellsModel.h"

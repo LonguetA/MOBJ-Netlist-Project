@@ -58,7 +58,6 @@ namespace Netlist {
     //------------DTOR-----------//
     Instance::~Instance      (){
       while ( not terms_     .empty() ) delete *terms_     .begin();
-
       //Retrait de l'instance à la cell
       owner_->remove(this);
     }

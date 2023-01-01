@@ -2,22 +2,29 @@
 #include "Instance.h"
 
 namespace Netlist {
+
+  //-----------------------CTOR------------------------------//
   InstancesModel :: InstancesModel ( QObject * parent )
   : QAbstractTableModel ( parent )
   , cell_ ( NULL ) { }
 
+
+  //-----------------------DTOR------------------------------//
   InstancesModel ::~InstancesModel () { }
 
+  //-----------------------SETTEUR------------------------------//
   void InstancesModel :: setCell ( Cell * cell ) {
     emit layoutAboutToBeChanged ();
     cell_ = cell ;
     emit layoutChanged ();
   }
 
+  //-----------------------GETTEUR------------------------------//
   int InstancesModel :: rowCount ( const QModelIndex & parent ) const { return ( cell_ ) ? cell_ -> getInstances (). size () : 0; }
 
   int InstancesModel :: columnCount ( const QModelIndex & parent ) const { return 2; }
   
+
   QVariant InstancesModel :: data ( const QModelIndex & index, int role ) const
   {
     if ( not cell_ or not index . isValid ()) return QVariant ();
@@ -44,6 +51,8 @@ namespace Netlist {
     }
     return QVariant ();
   }
+
+  
   Cell * InstancesModel :: getModel ( int row )
   { 
     if ( not cell_ ) return NULL ;

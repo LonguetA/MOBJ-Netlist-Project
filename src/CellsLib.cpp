@@ -76,7 +76,7 @@ namespace Netlist{
     int selectedRow = getSelectedRow ();
     if ( selectedRow < 0) return ;
 
-    //On affiche la cell qui correspont a l'instance selectionnee
+    //On affiche la cell qui correspont
     cellViewer_ -> setCell ( baseModel_ -> getModel ( selectedRow ) );
   }
 

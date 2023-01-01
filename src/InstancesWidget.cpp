@@ -7,7 +7,8 @@
 namespace Netlist {
 
   using namespace std;
-
+  
+  //-----------------------CTOR------------------------------//
   InstancesWidget :: InstancesWidget ( QWidget * parent )
   : QWidget( parent )
   , cellViewer_ ( NULL )
@@ -49,6 +50,7 @@ namespace Netlist {
     connect ( load_ , SIGNAL ( clicked ()) , this , SLOT ( load ()) );
   }
 
+  //-----------------------GETTEUR------------------------------//
   int InstancesWidget :: getSelectedRow () const
   {
     QModelIndexList selecteds = view_ -> selectionModel ()
@@ -57,6 +59,7 @@ namespace Netlist {
     return selecteds.first().row ();
   }
 
+  //-----------------------SLOT------------------------------//
   void InstancesWidget :: load ()
   {
     int selectedRow = getSelectedRow ();
@@ -64,6 +67,7 @@ namespace Netlist {
     cellViewer_ -> setCell ( baseModel_ -> getModel ( selectedRow ) );
   }
 
+  //-----------------------SETTEUR------------------------------//
   void InstancesWidget ::setCellViewer   ( CellViewer* c){
     cellViewer_ = c;
   }

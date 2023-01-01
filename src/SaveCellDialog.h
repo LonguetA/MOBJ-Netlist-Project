@@ -11,10 +11,19 @@ namespace Netlist {
   class SaveCellDialog : public QDialog {
     Q_OBJECT ;
     public :
+
+    //-----------------------CTOR------------------------------//
                       SaveCellDialog  ( QWidget * parent = NULL );
+
+    //-----------------------AFFICHAGE------------------------------//
               bool    run             ( QString & name );
+
+    //-----------------------GETTEUR------------------------------//
         const QString getCellName     () const ;
+
+    //-----------------------SETTEUR------------------------------//
               void    setCellName     ( const QString & );
+              
     protected :
               QLineEdit * lineEdit_ ;
   };

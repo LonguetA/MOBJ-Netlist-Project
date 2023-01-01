@@ -90,10 +90,10 @@ namespace Netlist {
         break;
       }
     }
-
     while ( not nets_     .empty() ) delete *nets_     .begin();
     while ( not instances_.empty() ) delete *instances_.begin();
     while ( not terms_    .empty() ) delete *terms_    .begin();
+    
   }
 
 
@@ -178,6 +178,7 @@ namespace Netlist {
   void  Cell::remove ( Instance* instance )
   { 
     for ( vector<Instance*>::iterator iinst=instances_.begin() ; iinst != instances_.end() ; ++iinst ) {
+      if (instances_.size() == 0) return;
       if (*iinst == instance) instances_.erase( iinst );
     }
   }

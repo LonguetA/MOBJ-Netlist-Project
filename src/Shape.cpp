@@ -48,7 +48,7 @@ namespace Netlist {
 
       return shape;
     }
-    Shape::Shape ( Symbol * owner ):owner_( owner ) { owner->add( this ); }
+    Shape::Shape ( Symbol * owner ):owner_( owner ) { owner->add( this );}
     Shape::~Shape (){ owner_->remove( this ); }
 
     BoxShape::BoxShape  ( Symbol * owner, const Box & box):Shape(owner),box_(box){}
@@ -71,7 +71,7 @@ namespace Netlist {
             return NULL;
         }
 
-        //Creation du Term
+        //Creation de la boxShape
         BoxShape *b = new BoxShape(owner,Box(atoi(x1Name.c_str()),atoi(y1Name.c_str()),atoi(x2Name.c_str()),atoi(y2Name.c_str())));
 
         return b;
@@ -122,7 +122,7 @@ namespace Netlist {
             return NULL;
         }
 
-        //Creation du Term
+        //Creation du TermShape
         TermShape *t = new TermShape(owner,termName,atoi(xName.c_str()),atoi(yName.c_str()),stringToAlign(alignName));
 
         return t;
@@ -150,7 +150,7 @@ namespace Netlist {
             return NULL;
         }
 
-        //Creation du Term
+        //Creation du LineShape
         LineShape *l = new LineShape(owner,atoi(x1Name.c_str()),atoi(y1Name.c_str()),atoi(x2Name.c_str()),atoi(y2Name.c_str()));
 
         return l;
@@ -180,7 +180,7 @@ namespace Netlist {
             return NULL;
         }
 
-        //Creation du Term
+        //Creation du ArcShape
         ArcShape *arc = new ArcShape(owner,Box(atoi(x1Name.c_str()),atoi(y1Name.c_str()),atoi(x2Name.c_str()),atoi(y2Name.c_str())),atoi(startName.c_str()),atoi(spanName.c_str()));
 
         return arc;
@@ -206,7 +206,7 @@ namespace Netlist {
             return NULL;
         }
 
-        //Creation du Term
+        //Creation du EllipseShape
         EllipseShape *e = new EllipseShape(owner,Box(atoi(x1Name.c_str()),atoi(y1Name.c_str()),atoi(x2Name.c_str()),atoi(y2Name.c_str())));
 
         return e;

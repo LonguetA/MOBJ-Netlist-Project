@@ -1,0 +1,5 @@
+-I/Users/axellonguet/Documents/GitHub/MOBJ-Netlist-/src
+-I/Library/Developer/CommandLineTools/SDKs/MacOSX12.sdk/usr/include/libxml2
+-o
+/Users/axellonguet/Documents/GitHub/MOBJ-Netlist-/build/moc_ErrorCellDialog.cpp
+/Users/axellonguet/Documents/GitHub/MOBJ-Netlist-/src/ErrorCellDialog.h

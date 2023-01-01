@@ -18,14 +18,6 @@ using namespace Netlist;
 
 int main ( int argc , char * argv []) {
   try {
-    cout << "Chargement des modeles..." << endl;
-    Cell * vdd = Cell::load( "vdd" );
-    Cell::load( "gnd" );
-    Cell::load( "TransistorN" );
-    Cell::load( "TransistorP" );
-    Cell::load( "and2" );
-    Cell::load( "or2" );
-    Cell* xor2      = Cell::load( "xor2" );
     QApplication * qa = new QApplication ( argc , argv );
     CellViewer * viewer = new CellViewer ();
     viewer -> show ();

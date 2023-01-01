@@ -14,16 +14,21 @@ namespace Netlist {
   class InstancesWidget : public QWidget {
     Q_OBJECT;
     public:
+    //-----------------------CTOR------------------------------//
                   InstancesWidget ( QWidget* parent=NULL );
-            void  setCellViewer   ( CellViewer* );
-            int   getSelectedRow  () const;
-    inline void  setCell         ( Cell* );
-            //bool  run             ();
-    protected:
-      //virtual void    paintEvent         ( QPaintEvent* );
 
+    //-----------------------SETTEUR------------------------------//
+            void  setCellViewer   ( CellViewer* );
+    inline  void  setCell         ( Cell* );
+
+    //-----------------------GETTEUR------------------------------//
+            int   getSelectedRow  () const;
+
+    //-----------------------SLOT------------------------------//
     public slots:
             void  load            ();
+
+            
     private:
             CellViewer*     cellViewer_;
             InstancesModel* baseModel_;

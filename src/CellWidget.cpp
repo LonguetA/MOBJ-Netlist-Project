@@ -455,7 +455,7 @@ namespace Netlist {
             }
           }
 
-          //Si on a des instances on affiche ses termShape
+          //Si on a des instances on affiche les termShapes de la cellule
           else{
 
 
@@ -481,16 +481,22 @@ namespace Netlist {
                   QRect rect = boxToScreenRect ( Box(t->getPosition().getX()-10,t->getPosition().getY()-10,t->getPosition().getX()+10,t->getPosition().getY()+10) );
                   QPainterPath path;
 
+                  //Affichage du Term en fonction de sa direction
+
                   if (t->getDirection() == Term::In){
+
+                    //Dessin triangle 
                     path.moveTo(rect.left(), rect.top());
                     path.lineTo(rect.left(),rect.bottom());
                     path.lineTo(rect.right(),rect.top() + (rect.height()/2));
                     path.lineTo(rect.topLeft());
+
                     rect = boxToScreenRect ( Box(t->getPosition().getX()-30,t->getPosition().getY()-8,t->getPosition().getX()-10,t->getPosition().getY()+10) );
                   }
 
 
                   else{
+                    //Dessin triangle 
                     path.moveTo(rect.right(), rect.top());
                     path.lineTo(rect.right(),rect.bottom());
                     path.lineTo(rect.left(),rect.top() + (rect.height()/2));
@@ -506,6 +512,10 @@ namespace Netlist {
 
                   QRect tag = boxToScreenRect ( Box(box.getX1()-12,box.getY1()-12,box.getX2()+40,box.getY2()+12) );
 
+
+                  //Nom du term en fonction de son alignement et sa direction
+
+                  //HAUT GAUCHE
                   if (termShape->getAlign() == TermShape::TopLeft){
                     if (t->getDirection() == Term::In){
                       tag = boxToScreenRect ( Box(t->getPosition().getX()-40,t->getPosition().getY(),t->getPosition().getX(),t->getPosition().getY()+40) );
@@ -516,6 +526,7 @@ namespace Netlist {
                     flagTxt = Qt::AlignTop;
                   }
 
+                  //HAUT DROIT
                   if (termShape->getAlign() == TermShape::TopRight){
                     if (t->getDirection() == Term::In){
                       tag = boxToScreenRect ( Box(t->getPosition().getX()+10,t->getPosition().getY(),t->getPosition().getX()+50,t->getPosition().getY()+40) );
@@ -526,17 +537,19 @@ namespace Netlist {
                     flagTxt = Qt::AlignTop;
                   }
 
+                  //BAS GAUCHE
                   if (termShape->getAlign() == TermShape::BottomLeft){
                     tag = boxToScreenRect ( Box(t->getPosition().getX(),t->getPosition().getY(),t->getPosition().getX(),t->getPosition().getY()) );
                     flagTxt = Qt::AlignBottom;
                   }
                 
-
+                  //BAS DROIT
                   if (termShape->getAlign() == TermShape:: BottomRight){
                     tag = boxToScreenRect ( Box(t->getPosition().getX(),t->getPosition().getY(),t->getPosition().getX(),t->getPosition().getY()) );
                     flagTxt = Qt::AlignBottom;
                   }
 
+                  //Affichage
                   QFont  bigFont = QFont( "URW Bookman L", 20 );
                   painter.setFont      ( bigFont );
                   painter . setPen ( QPen ( Qt :: red , 0 ) );
@@ -548,6 +561,7 @@ namespace Netlist {
               }
             }
 
+            //Sinon dessins des term de la cellule
             else{
               std::vector<Term *> terms = cell_->getTerms();
 
@@ -556,7 +570,6 @@ namespace Netlist {
 
 
                 Box box = Box( t->getPosition().getX()-2 , t->getPosition().getY()-2 , t->getPosition().getX()+2 ,t->getPosition().getY()+2 );
-                int flagTxt;
                 QRect tag;
                 QRect rect = boxToScreenRect ( Box(t->getPosition().getX()-10,t->getPosition().getY()-10,t->getPosition().getX()+10,t->getPosition().getY()+10) );
                 QPainterPath path;
@@ -581,6 +594,7 @@ namespace Netlist {
                   tag = boxToScreenRect ( Box(t->getPosition().getX(),t->getPosition().getY(),t->getPosition().getX()+60,t->getPosition().getY()+40) );
                 }
 
+                //Affichage
                 QFont  bigFont = QFont( "URW Bookman L", 20 );
                 painter.setFont      ( bigFont );
                 painter . setPen ( QPen ( Qt :: red , 0 ) );
@@ -605,6 +619,7 @@ namespace Netlist {
   }
 
 
+  //Fonction de dessin
   void  CellWidget::paintEvent ( QPaintEvent* event )
   {
     QFont  bigFont = QFont( "URW Bookman L", 36 );
@@ -616,21 +631,36 @@ namespace Netlist {
     painter.setFont      ( bigFont );
     painter.setBackground( QBrush( Qt::black ) );
     painter.eraseRect    ( QRect( QPoint(0,0), size() ) );
+    painter . setPen ( QPen ( Qt :: white , 0 ) );
 
     int frameWidth  = 460;
     int frameHeight = 100;
-    QRect nameRect ( (size().width ()-frameWidth )/2
+    QRect nameRect1 ( (size().width ()-frameWidth )/2
                    , (size().height()-frameHeight)/2
                    , frameWidth
                    , frameHeight
                    );
+    QRect nameRect2 ( 0
+                   , 0
+                   , frameWidth
+                   , frameHeight
+                   );
+    
+    //Affichage du nom de la cellule courante
+    if (!cell_)painter.drawText( nameRect1, Qt::AlignCenter, "No Cell Loaded" );
+    else painter.drawText(nameRect2,Qt::AlignLeft,cellName);
 
-    //painter.drawRect( nameRect );
-    //painter.drawText( nameRect, Qt::AlignCenter, cellName );
 
+    //Dessin de fils
     query(2,painter);
+
+    //Dessin des Term de la cellule
     query(3,painter);
+
+    //Dessin des instances
     query(1,painter);
+    
+    //Dessin des termShape des instances
     query(4,painter);
   }
 
