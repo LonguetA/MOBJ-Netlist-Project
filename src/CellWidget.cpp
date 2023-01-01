@@ -522,7 +522,7 @@ namespace Netlist {
                       tag = boxToScreenRect ( Box(t->getPosition().getX()-40,t->getPosition().getY(),t->getPosition().getX(),t->getPosition().getY()+40) );
                     }
                     else{
-                      tag = boxToScreenRect ( Box(t->getPosition().getX()-10,t->getPosition().getY(),t->getPosition().getX()+30,t->getPosition().getY()+40) );
+                      tag = boxToScreenRect ( Box(t->getPosition().getX()-10,t->getPosition().getY(),t->getPosition().getX()+50,t->getPosition().getY()+40) );
                     }
                     flagTxt = Qt::AlignTop;
                   }
@@ -583,7 +583,7 @@ namespace Netlist {
                   path.lineTo(rect.topLeft());
 
                   rect = boxToScreenRect ( Box(t->getPosition().getX()-30,t->getPosition().getY()-8,t->getPosition().getX()-10,t->getPosition().getY()+10) );
-                  tag = boxToScreenRect ( Box(t->getPosition().getX()-60,t->getPosition().getY(),t->getPosition().getX()+10,t->getPosition().getY()+30) );
+                  tag = boxToScreenRect ( Box(t->getPosition().getX()-70,t->getPosition().getY(),t->getPosition().getX()+10,t->getPosition().getY()+30) );
                 }
                 else{
                   path.moveTo(rect.right(), rect.top());
